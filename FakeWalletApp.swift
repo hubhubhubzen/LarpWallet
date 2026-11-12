@@ -6,11 +6,18 @@ struct FakeWalletApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environmentObject(store)
-                .preferredColorScheme(.dark)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(TK.bg.ignoresSafeArea())
+            GeometryReader { proxy in
+                ContentView()
+                    .padding(.top, proxy.safeAreaInsets.top)
+                    .padding(.bottom, proxy.safeAreaInsets.bottom)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(TK.bg)
+                    .ignoresSafeArea(.all)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(TK.bg.ignoresSafeArea())
+            .environmentObject(store)
+            .preferredColorScheme(.dark)
         }
     }
 }
