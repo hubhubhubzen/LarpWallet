@@ -1,0 +1,14 @@
+{
+  "project": "FakeWallet",
+  "platform": "ios",
+  "provider": "github",
+  "github": {
+    "owner": "hubhubhubzen",
+    "repo": "LarpWallet"
+  },
+  "ios": {
+    "scheme": "FakeWallet",
+    "bundleId": "com.local.fakewallet",
+    "configuration": "Debug"
+  }
+}
