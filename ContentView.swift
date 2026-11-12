@@ -9,7 +9,6 @@ enum TK {
     static let secondary = Color(hex: "8B93A7")
     static let green = Color(hex: "2FBF71")
     static let red = Color(hex: "F2545B")
-    static let uiColor = UIColor(red: 23 / 255, green: 26 / 255, blue: 34 / 255, alpha: 1)
 }
 
 enum AppTab: Hashable {
