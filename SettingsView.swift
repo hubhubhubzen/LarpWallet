@@ -62,6 +62,8 @@ struct SettingsView: View {
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(TK.bg)
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -69,6 +71,8 @@ struct SettingsView: View {
                     Button("Done") { dismiss() }
                 }
             }
+            .toolbarBackground(TK.bg, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .onAppear { draftAddress = store.address }
             .sheet(isPresented: $showAddToken) {
                 AddTokenView()
@@ -101,7 +105,11 @@ struct AddTokenView: View {
                 TextField("Icon Color Hex (e.g. F7931A)", text: $colorHex)
                     .autocapitalization(.none)
             }
+            .scrollContentBackground(.hidden)
+            .background(TK.bg)
             .navigationTitle("New Token")
+            .toolbarBackground(TK.bg, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
