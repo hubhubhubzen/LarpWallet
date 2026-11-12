@@ -17,7 +17,7 @@ struct SendView: View {
     }
 
     private var fiatText: String {
-        tkUSD((parsedAmount ?? 0) * (selected?.usdPrice ?? 0))
+        tkPrice((parsedAmount ?? 0) * (selected?.usdPrice ?? 0))
     }
 
     private var canSend: Bool {
