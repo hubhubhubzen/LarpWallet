@@ -25,34 +25,37 @@ struct ContentView: View {
     @State private var notice: Notice?
 
     var body: some View {
-        VStack(spacing: 0) {
-            Group {
-                switch tab {
-                case .wallet:
-                    WalletHome(
-                        showSettings: $showSettings,
-                        showSend: $showSend,
-                        showReceive: $showReceive,
-                        showActivity: $showActivity,
-                        notice: $notice
-                    )
-                case .trade:
-                    SimplePage(
-                        title: "Трейд",
-                        icon: "chart.line.uptrend.xyaxis",
-                        message: "Здесь будет обмен и графики."
-                    )
-                case .browser:
-                    SimplePage(
-                        title: "Браузер",
-                        icon: "safari",
-                        message: "Здесь будут приложения и сервисы."
-                    )
+        ZStack {
+            TK.bg.ignoresSafeArea()
+            VStack(spacing: 0) {
+                Group {
+                    switch tab {
+                    case .wallet:
+                        WalletHome(
+                            showSettings: $showSettings,
+                            showSend: $showSend,
+                            showReceive: $showReceive,
+                            showActivity: $showActivity,
+                            notice: $notice
+                        )
+                    case .trade:
+                        SimplePage(
+                            title: "Трейд",
+                            icon: "chart.line.uptrend.xyaxis",
+                            message: "Здесь будет обмен и графики."
+                        )
+                    case .browser:
+                        SimplePage(
+                            title: "Браузер",
+                            icon: "safari",
+                            message: "Здесь будут приложения и сервисы."
+                        )
+                    }
                 }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            TKTabBar(tab: $tab)
+                TKTabBar(tab: $tab)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(TK.bg.ignoresSafeArea())
@@ -118,16 +121,14 @@ struct WalletHome: View {
                 .padding(.horizontal, 12)
                 .padding(.top, 6)
 
-                HStack(alignment: .center, spacing: 8) {
+                HStack(alignment: .center, spacing: 6) {
                     Text(tkHero(store.totalUSD))
-                        .font(.system(size: 40, weight: .semibold))
+                        .font(.system(size: 34, weight: .semibold))
                         .foregroundColor(.white)
                         .contentTransition(.numericText())
-                    Image(systemName: "battery.100.bolt")
-                        .font(.system(size: 18, weight: .semibold))
-                        .foregroundColor(TK.accent)
+                    BatteryBolt()
                 }
-                .padding(.top, 28)
+                .padding(.top, 22)
 
                 Button {
                     UIPasteboard.general.string = store.address
@@ -148,7 +149,7 @@ struct WalletHome: View {
                     TKAction(title: "Отправить", icon: "arrow.up") { showSend = true }
                     TKAction(title: "Пополнить", icon: "arrow.down") { showReceive = true }
                     TKAction(title: "Обменять", icon: "arrow.up.arrow.down") { notice = Notice(title: "Обменять") }
-                    TKAction(title: "Застейкать", icon: "chart.line.uptrend.xyaxis") { notice = Notice(title: "Застейкать") }
+                    TKAction(title: "Застейкать", icon: "chart.bar.fill") { notice = Notice(title: "Застейкать") }
                 }
                 .padding(.top, 26)
                 .padding(.horizontal, 8)
@@ -194,7 +195,7 @@ struct WalletHome: View {
     private func headerIcon(_ name: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: name)
-                .font(.system(size: 20, weight: .regular))
+                .font(.system(size: 22, weight: .regular))
                 .foregroundColor(.white)
                 .frame(width: 40, height: 40)
         }
@@ -382,9 +383,9 @@ struct TKTabBar: View {
             tabItem(.trade, "chart.line.uptrend.xyaxis", "Трейд")
             tabItem(.browser, "safari", "Браузер")
         }
-        .padding(.top, 8)
+        .padding(.top, 6)
         .padding(.bottom, 2)
-        .background(TK.bg)
+        .background(TK.bg.ignoresSafeArea(edges: .bottom))
     }
 
     private func tabItem(_ value: AppTab, _ icon: String, _ title: String) -> some View {
@@ -413,9 +414,9 @@ struct TKAction: View {
         Button(action: action) {
             VStack(spacing: 8) {
                 Image(systemName: icon)
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(.system(size: 17, weight: .medium))
                     .foregroundColor(.white)
-                    .frame(width: 52, height: 52)
+                    .frame(width: 48, height: 48)
                     .background(TK.button)
                     .clipShape(Circle())
                 Text(title)
@@ -477,57 +478,134 @@ struct TokenRow: View {
     }
 }
 
+struct BatteryBolt: View {
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 2.5, style: .continuous)
+                .stroke(TK.accent, lineWidth: 1.3)
+                .frame(width: 20, height: 11)
+            RoundedRectangle(cornerRadius: 0.6)
+                .fill(TK.accent)
+                .frame(width: 1.5, height: 4)
+                .offset(x: 11)
+            Image(systemName: "bolt.fill")
+                .font(.system(size: 7, weight: .bold))
+                .foregroundColor(TK.accent)
+        }
+        .frame(width: 24, height: 14)
+    }
+}
+
 struct TokenIcon: View {
     let token: FakeToken
 
     var body: some View {
         ZStack {
-            Circle()
-                .fill(Color(hex: token.iconColorHex))
-            glyph
-                .foregroundColor(.white)
+            Circle().fill(Color(hex: token.iconColorHex))
+            mark
         }
         .frame(width: 40, height: 40)
         .overlay(alignment: .bottomTrailing) {
             if token.symbol == "USDT" {
                 Image(systemName: "triangle.fill")
-                    .font(.system(size: 9))
+                    .font(.system(size: 8))
                     .foregroundColor(Color(hex: "FF2D55"))
-                    .offset(x: 2, y: 2)
+                    .offset(x: 1, y: 1)
             }
         }
         .overlay(alignment: .bottomLeading) {
             if token.symbol == "USDC" {
                 Circle()
                     .fill(Color(hex: "1B3A4B"))
-                    .frame(width: 14, height: 14)
-                    .overlay(Circle().stroke(TK.card, lineWidth: 2))
-                    .offset(x: -2, y: 2)
+                    .frame(width: 12, height: 12)
+                    .overlay(Circle().stroke(TK.card, lineWidth: 1.5))
+                    .offset(x: -1, y: 1)
             }
         }
     }
 
     @ViewBuilder
-    private var glyph: some View {
+    private var mark: some View {
         switch token.symbol {
         case "ETH":
-            Image(systemName: "diamond.fill").font(.system(size: 18, weight: .bold))
+            EthMark()
         case "BNB":
-            Image(systemName: "cube.fill").font(.system(size: 18, weight: .bold))
+            BnbMark()
         case "SOL":
-            VStack(spacing: 2) {
-                RoundedRectangle(cornerRadius: 1).frame(width: 16, height: 3)
-                RoundedRectangle(cornerRadius: 1).frame(width: 12, height: 3)
-                RoundedRectangle(cornerRadius: 1).frame(width: 16, height: 3)
-            }
+            SolMark()
         case "USDT":
-            Image(systemName: "t.circle").font(.system(size: 20, weight: .bold))
+            Text("T")
+                .font(.system(size: 18, weight: .bold))
+                .foregroundColor(.white)
         case "USDC":
-            Image(systemName: "dollarsign").font(.system(size: 18, weight: .bold))
+            Text("$")
+                .font(.system(size: 18, weight: .bold))
+                .foregroundColor(.white)
         default:
             Text(String(token.symbol.prefix(1)))
                 .font(.system(size: 16, weight: .bold))
+                .foregroundColor(.white)
         }
+    }
+}
+
+struct EthMark: View {
+    var body: some View {
+        Canvas { context, size in
+            let w = size.width
+            let h = size.height
+            var top = Path()
+            top.move(to: CGPoint(x: w / 2, y: 0))
+            top.addLine(to: CGPoint(x: w, y: h * 0.46))
+            top.addLine(to: CGPoint(x: w / 2, y: h * 0.62))
+            top.addLine(to: CGPoint(x: 0, y: h * 0.46))
+            top.closeSubpath()
+            var bottom = Path()
+            bottom.move(to: CGPoint(x: 0, y: h * 0.54))
+            bottom.addLine(to: CGPoint(x: w / 2, y: h * 0.70))
+            bottom.addLine(to: CGPoint(x: w, y: h * 0.54))
+            bottom.addLine(to: CGPoint(x: w / 2, y: h))
+            bottom.closeSubpath()
+            context.fill(top, with: .color(.white))
+            context.fill(bottom, with: .color(.white.opacity(0.72)))
+        }
+        .frame(width: 16, height: 22)
+    }
+}
+
+struct BnbMark: View {
+    var body: some View {
+        Diamond()
+            .stroke(.white, lineWidth: 1.6)
+            .frame(width: 16, height: 16)
+            .overlay(
+                Diamond()
+                    .fill(.white)
+                    .frame(width: 6, height: 6)
+            )
+    }
+}
+
+struct SolMark: View {
+    var body: some View {
+        VStack(spacing: 2) {
+            RoundedRectangle(cornerRadius: 1).frame(width: 16, height: 3)
+            RoundedRectangle(cornerRadius: 1).frame(width: 16, height: 3).offset(x: 1)
+            RoundedRectangle(cornerRadius: 1).frame(width: 16, height: 3)
+        }
+        .foregroundColor(.white)
+    }
+}
+
+struct Diamond: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.move(to: CGPoint(x: rect.midX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.midY))
+        path.addLine(to: CGPoint(x: rect.midX, y: rect.maxY))
+        path.addLine(to: CGPoint(x: rect.minX, y: rect.midY))
+        path.closeSubpath()
+        return path
     }
 }
 
