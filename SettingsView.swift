@@ -57,18 +57,18 @@ struct SettingsView: View {
 
                 Section("Danger") {
                     Button("Reset All Data", role: .destructive) {
-                        UserDefaults.standard.removeObject(forKey: "tonkeeper_fake_state_v1")
+                        UserDefaults.standard.removeObject(forKey: WalletStore.storageKey)
                         dismiss()
                     }
                 }
             }
             .scrollContentBackground(.hidden)
             .background(TK.bg)
-            .navigationTitle("Settings")
+            .navigationTitle("Настройки")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Done") { dismiss() }
+                    Button("Готово") { dismiss() }
                 }
             }
             .toolbarBackground(TK.bg, for: .navigationBar)

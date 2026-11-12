@@ -12,7 +12,8 @@ final class WalletStore: ObservableObject {
         didSet { save() }
     }
 
-    private let key = "tonkeeper_fake_state_v1"
+    static let storageKey = "tonkeeper_fake_state_v2"
+    private let key = WalletStore.storageKey
 
     init() {
         if let data = UserDefaults.standard.data(forKey: key),
@@ -21,17 +22,23 @@ final class WalletStore: ObservableObject {
             self.tokens = saved.tokens
             self.history = saved.history
         } else {
-            self.address = "UQBFakeAddress_000000000000000000000000000"
+            self.address = "UQDu0000000000000000000000003CZI"
             self.tokens = [
-                FakeToken(name: "Toncoin", symbol: "TON",
-                          balance: 1240.50, usdPrice: 5.42,
-                          iconColorHex: "0098EA"),
+                FakeToken(name: "Ethereum", symbol: "ETH",
+                          balance: 0, usdPrice: 2015.48,
+                          iconColorHex: "627EEA", priceChange: -3.05),
+                FakeToken(name: "BNB", symbol: "BNB",
+                          balance: 0, usdPrice: 656.35,
+                          iconColorHex: "F3BA2F", priceChange: -4.40),
+                FakeToken(name: "Solana", symbol: "SOL",
+                          balance: 0, usdPrice: 81.52,
+                          iconColorHex: "111111", priceChange: -3.96),
                 FakeToken(name: "Tether USD", symbol: "USDT",
-                          balance: 3200.00, usdPrice: 1.00,
-                          iconColorHex: "26A17B"),
-                FakeToken(name: "Notcoin", symbol: "NOT",
-                          balance: 150000, usdPrice: 0.008,
-                          iconColorHex: "000000")
+                          balance: 0, usdPrice: 0.999,
+                          iconColorHex: "26A17B", priceChange: -0.01, network: "TRON"),
+                FakeToken(name: "USD Coin", symbol: "USDC",
+                          balance: 0, usdPrice: 0.999,
+                          iconColorHex: "2775CA", priceChange: 0, network: "ARBITRUM")
             ]
             self.history = []
         }

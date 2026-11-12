@@ -75,7 +75,7 @@ struct SendView: View {
                     Spacer()
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Recipient")
+                        Text("Получатель")
                             .font(.system(size: 13, weight: .medium))
                             .foregroundColor(TK.secondary)
                         TextField("UQ...", text: $toAddress)
@@ -94,7 +94,7 @@ struct SendView: View {
                         store.send(symbol: selectedSymbol, amount: amt, to: toAddress)
                         dismiss()
                     } label: {
-                        Text("Continue")
+                        Text("Продолжить")
                             .font(.system(size: 17, weight: .semibold))
                             .foregroundColor(canSend ? .white : TK.secondary)
                             .frame(maxWidth: .infinity)
@@ -108,11 +108,11 @@ struct SendView: View {
                     .padding(.bottom, 12)
                 }
             }
-            .navigationTitle("Send")
+            .navigationTitle("Отправить")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Close") { dismiss() }
+                    Button("Закрыть") { dismiss() }
                 }
             }
             .toolbarBackground(TK.bg, for: .navigationBar)

@@ -7,6 +7,8 @@ struct FakeToken: Identifiable, Codable, Equatable {
     var balance: Double
     var usdPrice: Double
     var iconColorHex: String
+    var priceChange: Double = 0
+    var network: String? = nil
 
     var usdValue: Double { balance * usdPrice }
 }
