@@ -89,53 +89,63 @@ struct WalletHome: View {
 
     var body: some View {
         VStack(spacing: 0) {
-                HStack(spacing: 2) {
-                    Button { notice = Notice(title: "Сканер") } label: {
-                        ScanGlyph().frame(width: 40, height: 40)
+                ZStack {
+                    HStack(spacing: 7) {
+                        Button { notice = Notice(title: "Сканер") } label: {
+                            ScanGlyph().frame(width: 40, height: 40)
+                        }
+                        Spacer(minLength: 0)
+                        Button { showActivity = true } label: {
+                            ClockGlyph().frame(width: 40, height: 40)
+                        }
+                        Button { showSettings = true } label: {
+                            GearGlyph()
+                                .frame(width: 40, height: 40)
+                                .overlay(alignment: .topTrailing) {
+                                    Circle()
+                                        .fill(Color(hex: "FF3B30"))
+                                        .frame(width: 7, height: 7)
+                                        .offset(x: -4, y: 7)
+                                }
+                        }
                     }
-                    Spacer(minLength: 4)
+                    .padding(.leading, 11)
+                    .padding(.trailing, 13)
+
                     Button { showSettings = true } label: {
-                        HStack(spacing: 7) {
+                        HStack(spacing: 6) {
                             Text("🦬")
-                                .font(.system(size: 17))
+                                .font(.system(size: 16))
                             Text("sedativedrug")
-                                .font(.system(size: 16, weight: .semibold))
+                                .font(.system(size: 14, weight: .semibold))
                             Image(systemName: "chevron.down")
-                                .font(.system(size: 11, weight: .bold))
+                                .font(.system(size: 10, weight: .bold))
+                                .opacity(0.85)
                         }
                         .foregroundColor(.white)
-                        .padding(.leading, 12)
-                        .padding(.trailing, 14)
-                        .padding(.vertical, 10)
+                        .padding(.horizontal, 14)
+                        .frame(height: 40)
                         .background(Color(hex: "FF4C50"))
                         .clipShape(Capsule())
                     }
-                    Spacer(minLength: 4)
-                    Button { showActivity = true } label: {
-                        ClockGlyph().frame(width: 36, height: 40)
-                    }
-                    Button { showSettings = true } label: {
-                        GearGlyph()
-                            .frame(width: 36, height: 40)
-                            .overlay(alignment: .topTrailing) {
-                                Circle()
-                                    .fill(Color(hex: "FF3B30"))
-                                    .frame(width: 7, height: 7)
-                                    .offset(x: 1, y: 7)
-                            }
-                    }
                 }
-                .padding(.horizontal, 12)
-                .padding(.top, 6)
+                .frame(height: 40)
+                .padding(.top, 12)
 
                 HStack(alignment: .center, spacing: 6) {
-                    Text(tkHero(store.totalUSD))
-                        .font(.system(size: 40, weight: .semibold, design: .rounded))
-                        .foregroundColor(Color(hex: "72767C"))
-                        .contentTransition(.numericText())
+                    let parts = tkHeroParts(store.totalUSD)
+                    HStack(alignment: .firstTextBaseline, spacing: 0) {
+                        Text(parts.whole)
+                            .font(.system(size: 46, weight: .semibold, design: .rounded))
+                        Text(parts.fraction)
+                            .font(.system(size: 32, weight: .semibold, design: .rounded))
+                    }
+                    .foregroundColor(Color(hex: "72767C"))
+                    .contentTransition(.numericText())
                     KeeperBattery()
                 }
-                .padding(.top, 22)
+                .frame(height: 56)
+                .padding(.top, 23)
 
                 Button {
                     UIPasteboard.general.string = store.address
@@ -145,7 +155,7 @@ struct WalletHome: View {
                     HStack(spacing: 6) {
                         Text(copied ? "Скопировано" : shortAddress(store.address))
                             .font(.system(size: 15, weight: .medium))
-                        Image(systemName: copied ? "checkmark" : "square.on.square")
+                        Image(systemName: copied ? "checkmark" : "chevron.up.chevron.down")
                             .font(.system(size: 11, weight: .semibold))
                     }
                     .foregroundColor(TK.secondary)
@@ -180,8 +190,8 @@ struct WalletHome: View {
                     }
                 }
                 .padding(.horizontal, 20)
-                .padding(.top, 26)
-                .padding(.bottom, 10)
+                .padding(.top, 41)
+                .padding(.bottom, 14)
 
                 VStack(spacing: 0) {
                     ForEach(store.tokens) { token in
@@ -252,36 +262,35 @@ struct ScanGlyph: View {
     var body: some View {
         Canvas { context, size in
             let s = size.width
-            let arm = s * 0.32
-            let inset: CGFloat = 1.2
-            let style = StrokeStyle(lineWidth: 1.7, lineCap: .round, lineJoin: .round)
-            func corner(_ points: [CGPoint]) {
-                var path = Path()
-                path.move(to: points[0])
-                path.addLine(to: points[1])
-                path.addLine(to: points[2])
-                context.stroke(path, with: .color(.white), style: style)
-            }
-            corner([
-                CGPoint(x: inset, y: inset + arm),
-                CGPoint(x: inset, y: inset),
-                CGPoint(x: inset + arm, y: inset)
-            ])
-            corner([
-                CGPoint(x: s - inset - arm, y: inset),
-                CGPoint(x: s - inset, y: inset),
-                CGPoint(x: s - inset, y: inset + arm)
-            ])
-            corner([
-                CGPoint(x: inset, y: s - inset - arm),
-                CGPoint(x: inset, y: s - inset),
-                CGPoint(x: inset + arm, y: s - inset)
-            ])
-            corner([
-                CGPoint(x: s - inset - arm, y: s - inset),
-                CGPoint(x: s - inset, y: s - inset),
-                CGPoint(x: s - inset, y: s - inset - arm)
-            ])
+            let a: CGFloat = 1.1
+            let arm = s * 0.34
+            let r: CGFloat = 4.5
+            let style = StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round)
+            var path = Path()
+            // top-left
+            path.move(to: CGPoint(x: a, y: a + arm))
+            path.addLine(to: CGPoint(x: a, y: a + r))
+            path.addQuadCurve(to: CGPoint(x: a + r, y: a), control: CGPoint(x: a, y: a))
+            path.addLine(to: CGPoint(x: a + arm, y: a))
+            // top-right
+            path.move(to: CGPoint(x: s - a - arm, y: a))
+            path.addLine(to: CGPoint(x: s - a - r, y: a))
+            path.addQuadCurve(to: CGPoint(x: s - a, y: a + r), control: CGPoint(x: s - a, y: a))
+            path.addLine(to: CGPoint(x: s - a, y: a + arm))
+            // bottom-left
+            path.move(to: CGPoint(x: a, y: s - a - arm))
+            path.addLine(to: CGPoint(x: a, y: s - a - r))
+            path.addQuadCurve(to: CGPoint(x: a + r, y: s - a), control: CGPoint(x: a, y: s - a))
+            path.addLine(to: CGPoint(x: a + arm, y: s - a))
+            // bottom-right
+            path.move(to: CGPoint(x: s - a - arm, y: s - a))
+            path.addLine(to: CGPoint(x: s - a - r, y: s - a))
+            path.addQuadCurve(to: CGPoint(x: s - a, y: s - a - r), control: CGPoint(x: s - a, y: s - a))
+            path.addLine(to: CGPoint(x: s - a, y: s - a - arm))
+            // middle bar
+            path.move(to: CGPoint(x: a + 3, y: s / 2))
+            path.addLine(to: CGPoint(x: s - a - 3, y: s / 2))
+            context.stroke(path, with: .color(.white), style: style)
         }
         .frame(width: 22, height: 22)
     }
@@ -559,6 +568,7 @@ struct TokenRow: View {
     var body: some View {
         HStack(spacing: 12) {
             TokenIcon(token: token)
+                .frame(width: 48, height: 48)
             VStack(alignment: .leading, spacing: 3) {
                 HStack(spacing: 4) {
                     Text(token.symbol)
@@ -597,8 +607,8 @@ struct TokenRow: View {
                     .foregroundColor(TK.secondary)
             }
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 14)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
         .frame(minHeight: 72)
     }
 }
@@ -658,8 +668,8 @@ struct TokenIcon: View {
             Image("token-\(token.symbol.lowercased())")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 44, height: 44)
-                .clipShape(Circle())
+                .frame(width: 48, height: 48)
+                .offset(y: 2)
     }
 }
 
@@ -763,6 +773,14 @@ struct Notice: Identifiable {
 func shortAddress(_ a: String) -> String {
     guard a.count > 10 else { return a }
     return "\(a.prefix(4))...\(a.suffix(4))"
+}
+
+func tkHeroParts(_ value: Double) -> (whole: String, fraction: String) {
+    let full = tkGrouped(value)
+    if let comma = full.lastIndex(of: ",") {
+        return ("$ " + String(full[..<comma]), String(full[comma...]))
+    }
+    return ("$ " + full, "")
 }
 
 func tkHero(_ value: Double) -> String {
