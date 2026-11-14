@@ -5,13 +5,11 @@ enum TK {
     static let bg = Color(hex: "0F1620")
     static let card = Color(hex: "1D2733")
     static let button = Color(hex: "1E2836")
+    static let pill = Color(hex: "2A3344")
     static let accent = Color(hex: "3294FF")
-    static let secondary = Color(hex: "818995")
-    static let hero = Color(hex: "72767C")
+    static let secondary = Color(hex: "8B95A7")
     static let green = Color(hex: "3DDC97")
-    static let red = Color(hex: "FF5B66")
-    static let pill = Color(hex: "FF4C50")
-    static let bolt = Color(hex: "2D97FF")
+    static let red = Color(hex: "FF5E66")
 }
 
 enum AppTab: Hashable {
@@ -109,38 +107,47 @@ struct WalletHome: View {
                         .padding(.leading, 12)
                         .padding(.trailing, 14)
                         .padding(.vertical, 9)
-                        .background(TK.pill)
+                        .background(Color(hex: "FF4C50"))
                         .clipShape(Capsule())
                     }
                     Spacer(minLength: 4)
                     Button { showActivity = true } label: {
-                        Image(systemName: "clock")
-                            .font(.system(size: 21, weight: .light))
-                            .foregroundColor(.white)
-                            .frame(width: 36, height: 40)
+                        ClockGlyph().frame(width: 36, height: 40)
                     }
                     Button { showSettings = true } label: {
-                        Image(systemName: "gearshape")
-                            .font(.system(size: 21, weight: .light))
-                            .foregroundColor(.white)
+                        GearGlyph()
                             .frame(width: 36, height: 40)
                             .overlay(alignment: .topTrailing) {
                                 Circle()
                                     .fill(Color(hex: "FF3B30"))
                                     .frame(width: 7, height: 7)
-                                    .offset(x: 3, y: 8)
+                                    .offset(x: 1, y: 7)
                             }
                     }
                 }
                 .padding(.horizontal, 12)
                 .padding(.top, 6)
 
-                HStack(alignment: .center, spacing: 8) {
+                HStack(alignment: .center, spacing: 6) {
                     Text(tkHero(store.totalUSD))
-                        .font(.system(size: 42, weight: .semibold, design: .rounded))
-                        .foregroundColor(TK.hero)
+                        .font(.system(size: 40, weight: .semibold, design: .rounded))
+                        .foregroundColor(.white)
                         .contentTransition(.numericText())
-                    BatteryBolt()
+                    Image("battery-tk")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 11, height: 16)
+                        .padding(4)
+                        .background(
+                            RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                .fill(Color(hex: "1C2430"))
+                        )
+                        .overlay(alignment: .trailing) {
+                            RoundedRectangle(cornerRadius: 1)
+                                .fill(Color(hex: "1C2430"))
+                                .frame(width: 2, height: 6)
+                                .offset(x: 2)
+                        }
                 }
                 .padding(.top, 22)
 
@@ -181,7 +188,10 @@ struct WalletHome: View {
                         HStack(spacing: 6) {
                             Text("Управлять")
                                 .font(.system(size: 15, weight: .medium))
-                            ManageGlyph()
+                            Image("manage-tk")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 18, height: 16)
                         }
                         .foregroundColor(TK.secondary)
                     }
@@ -203,6 +213,63 @@ struct WalletHome: View {
                 .padding(.bottom, 8)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+    }
+}
+
+struct ScanGlyph: View {
+    var body: some View {
+        Canvas { context, size in
+            let s = size.width
+            let arm = s * 0.32
+            let inset: CGFloat = 1.2
+            let style = StrokeStyle(lineWidth: 1.7, lineCap: .round, lineJoin: .round)
+            func corner(_ points: [CGPoint]) {
+                var path = Path()
+                path.move(to: points[0])
+                path.addLine(to: points[1])
+                path.addLine(to: points[2])
+                context.stroke(path, with: .color(.white), style: style)
+            }
+            corner([
+                CGPoint(x: inset, y: inset + arm),
+                CGPoint(x: inset, y: inset),
+                CGPoint(x: inset + arm, y: inset)
+            ])
+            corner([
+                CGPoint(x: s - inset - arm, y: inset),
+                CGPoint(x: s - inset, y: inset),
+                CGPoint(x: s - inset, y: inset + arm)
+            ])
+            corner([
+                CGPoint(x: inset, y: s - inset - arm),
+                CGPoint(x: inset, y: s - inset),
+                CGPoint(x: inset + arm, y: s - inset)
+            ])
+            corner([
+                CGPoint(x: s - inset - arm, y: s - inset),
+                CGPoint(x: s - inset, y: s - inset),
+                CGPoint(x: s - inset, y: s - inset - arm)
+            ])
+        }
+        .frame(width: 22, height: 22)
+    }
+}
+
+struct ClockGlyph: View {
+    var body: some View {
+        Image(systemName: "clock")
+            .font(.system(size: 21, weight: .regular))
+            .foregroundColor(.white)
+            .frame(width: 24, height: 24)
+    }
+}
+
+struct GearGlyph: View {
+    var body: some View {
+        Image(systemName: "gearshape")
+            .font(.system(size: 20, weight: .regular))
+            .foregroundColor(.white)
+            .frame(width: 24, height: 24)
     }
 }
 
@@ -481,20 +548,20 @@ struct TokenRow: View {
                 }
                 HStack(spacing: 6) {
                     Text(tkPrice(token.usdPrice))
-                        .font(.system(size: 15, weight: .medium, design: .rounded))
+                        .font(.system(size: 14))
                         .foregroundColor(TK.secondary)
                     Text(tkPercent(token.priceChange))
-                        .font(.system(size: 15, weight: .medium, design: .rounded))
+                        .font(.system(size: 14, weight: .medium))
                         .foregroundColor(token.priceChange < 0 ? TK.red : TK.green)
                 }
             }
             Spacer(minLength: 8)
             VStack(alignment: .trailing, spacing: 3) {
                 Text(tkAmount(token.balance))
-                    .font(.system(size: 17, weight: .semibold, design: .rounded))
+                    .font(.system(size: 17, weight: .semibold))
                     .foregroundColor(.white)
                 Text(token.usdValue == 0 ? "$0" : tkPrice(token.usdValue))
-                    .font(.system(size: 15, weight: .medium, design: .rounded))
+                    .font(.system(size: 14))
                     .foregroundColor(TK.secondary)
             }
         }
@@ -506,98 +573,19 @@ struct TokenRow: View {
 
 struct BatteryBolt: View {
     var body: some View {
-        VStack(spacing: 1.5) {
-            RoundedRectangle(cornerRadius: 1)
-                .fill(Color(hex: "C5CDD8"))
-                .frame(width: 9, height: 2.5)
-            ZStack {
-                RoundedRectangle(cornerRadius: 5, style: .continuous)
-                    .stroke(Color(hex: "C5CDD8"), lineWidth: 1.6)
-                Image(systemName: "bolt.fill")
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundColor(TK.bolt)
-            }
-            .frame(width: 22, height: 30)
+        ZStack {
+            RoundedRectangle(cornerRadius: 3, style: .continuous)
+                .fill(TK.accent)
+                .frame(width: 22, height: 12)
+            RoundedRectangle(cornerRadius: 0.8)
+                .fill(TK.accent)
+                .frame(width: 2, height: 5)
+                .offset(x: 12.5)
+            Image(systemName: "bolt.fill")
+                .font(.system(size: 8, weight: .black))
+                .foregroundColor(TK.bg)
         }
-    }
-}
-
-struct ScanGlyph: View {
-    var body: some View {
-        Canvas { context, size in
-            let s = size.width
-            let arm = s * 0.32
-            let inset: CGFloat = 1.2
-            let style = StrokeStyle(lineWidth: 1.7, lineCap: .round, lineJoin: .round)
-            func corner(_ points: [CGPoint]) {
-                var path = Path()
-                path.move(to: points[0])
-                path.addLine(to: points[1])
-                path.addLine(to: points[2])
-                context.stroke(path, with: .color(.white), style: style)
-            }
-            corner([
-                CGPoint(x: inset, y: inset + arm),
-                CGPoint(x: inset, y: inset),
-                CGPoint(x: inset + arm, y: inset)
-            ])
-            corner([
-                CGPoint(x: s - inset - arm, y: inset),
-                CGPoint(x: s - inset, y: inset),
-                CGPoint(x: s - inset, y: inset + arm)
-            ])
-            corner([
-                CGPoint(x: inset, y: s - inset - arm),
-                CGPoint(x: inset, y: s - inset),
-                CGPoint(x: inset + arm, y: s - inset)
-            ])
-            corner([
-                CGPoint(x: s - inset - arm, y: s - inset),
-                CGPoint(x: s - inset, y: s - inset),
-                CGPoint(x: s - inset, y: s - inset - arm)
-            ])
-        }
-        .frame(width: 22, height: 22)
-    }
-}
-
-struct ClockGlyph: View {
-    var body: some View {
-        Image(systemName: "clock")
-            .font(.system(size: 21, weight: .regular))
-            .foregroundColor(.white)
-            .frame(width: 24, height: 24)
-    }
-}
-
-struct GearGlyph: View {
-    var body: some View {
-        Image(systemName: "gearshape")
-            .font(.system(size: 20, weight: .regular))
-            .foregroundColor(.white)
-            .frame(width: 24, height: 24)
-    }
-}
-
-struct ManageGlyph: View {
-    var body: some View {
-        Canvas { context, size in
-            let color = Color(hex: "9AA3B2")
-            func diamond(_ rect: CGRect) -> Path {
-                var path = Path()
-                path.move(to: CGPoint(x: rect.midX, y: rect.minY))
-                path.addLine(to: CGPoint(x: rect.maxX, y: rect.midY))
-                path.addLine(to: CGPoint(x: rect.midX, y: rect.maxY))
-                path.addLine(to: CGPoint(x: rect.minX, y: rect.midY))
-                path.closeSubpath()
-                return path
-            }
-            let d = size.width * 0.48
-            let style = StrokeStyle(lineWidth: 1.35, lineJoin: .round)
-            context.stroke(diamond(CGRect(x: size.width * 0.04, y: 0, width: d, height: d)), with: .color(color), style: style)
-            context.stroke(diamond(CGRect(x: size.width * 0.42, y: size.height * 0.46, width: d, height: d)), with: .color(color), style: style)
-        }
-        .frame(width: 16, height: 16)
+        .frame(width: 28, height: 16)
     }
 }
 
@@ -638,8 +626,7 @@ struct TokenIcon: View {
             Image("token-\(token.symbol.lowercased())")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 52, height: 52)
-                .clipShape(Circle())
+                .frame(width: 40, height: 40)
     }
 }
 

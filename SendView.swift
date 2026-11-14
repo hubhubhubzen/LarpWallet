@@ -56,11 +56,11 @@ struct SendView: View {
                     TextField("0", text: $amount)
                         .keyboardType(.decimalPad)
                         .multilineTextAlignment(.center)
-                        .font(.system(size: 48, weight: .semibold, design: .rounded))
+                        .font(.system(size: 48, weight: .bold))
                         .foregroundColor(.white)
                         .padding(.horizontal, 24)
                     Text(fiatText)
-                        .font(.system(size: 16, weight: .medium, design: .rounded))
+                        .font(.system(size: 16, weight: .medium))
                         .foregroundColor(TK.secondary)
                         .padding(.top, 4)
                     if let selected {
