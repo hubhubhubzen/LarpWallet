@@ -96,7 +96,7 @@ struct WalletHome: View {
                     Button { showSettings = true } label: {
                         HStack(spacing: 6) {
                             WalletGlyph()
-                                .frame(width: 16, height: 16)
+                                .frame(width: 18, height: 14)
                             Text("Кошелёк")
                                 .font(.system(size: 15, weight: .semibold))
                             Image(systemName: "chevron.down")
@@ -152,8 +152,7 @@ struct WalletHome: View {
                     TKAction(title: "Обменять", icon: "arrow.up.arrow.down") { notice = Notice(title: "Обменять") }
                     TKAction(title: "Застейкать", icon: "stake") { notice = Notice(title: "Застейкать") }
                 }
-                .padding(.top, 26)
-                .padding(.horizontal, 8)
+                .padding(.top, 28)
 
                 HStack {
                     HStack(spacing: 4) {
@@ -398,7 +397,7 @@ struct TKTabBar: View {
                 Group {
                     if icon == "wallet" {
                         WalletGlyph(filled: true)
-                            .frame(width: 22, height: 22)
+                            .frame(width: 22, height: 17)
                     } else {
                         Image(systemName: icon)
                             .font(.system(size: 20, weight: selected ? .semibold : .regular))
@@ -430,7 +429,7 @@ struct TKAction: View {
                     }
                 }
                 .foregroundColor(.white)
-                .frame(width: 46, height: 46)
+                .frame(width: 43, height: 43)
                 .background(TK.button)
                 .clipShape(Circle())
                 Text(title)
@@ -439,7 +438,7 @@ struct TKAction: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
             }
-            .frame(maxWidth: .infinity)
+            .frame(width: 76)
         }
     }
 }
@@ -514,28 +513,18 @@ struct WalletGlyph: View {
     var filled: Bool = false
 
     var body: some View {
-        Canvas { context, size in
-            let w = size.width
-            let h = size.height
-            var card = Path()
-            card.addRoundedRect(
-                in: CGRect(x: w * 0.06, y: h * 0.30, width: w * 0.88, height: h * 0.60),
-                cornerSize: CGSize(width: w * 0.12, height: w * 0.12)
+        RoundedRectangle(cornerRadius: 4, style: .continuous)
+            .fill(filled ? TK.accent : Color.clear)
+            .overlay(
+                RoundedRectangle(cornerRadius: 4, style: .continuous)
+                    .stroke(filled ? Color.clear : Color.white, lineWidth: 1.4)
             )
-            var flap = Path()
-            flap.move(to: CGPoint(x: w * 0.14, y: h * 0.36))
-            flap.addLine(to: CGPoint(x: w * 0.38, y: h * 0.10))
-            flap.addLine(to: CGPoint(x: w * 0.90, y: h * 0.10))
-            flap.addLine(to: CGPoint(x: w * 0.90, y: h * 0.36))
-            flap.closeSubpath()
-            if filled {
-                context.fill(card, with: .foreground)
-                context.fill(flap, with: .foreground)
-            } else {
-                context.stroke(card, with: .foreground, lineWidth: 1.5)
-                context.stroke(flap, with: .foreground, lineWidth: 1.5)
+            .overlay(alignment: .trailing) {
+                Circle()
+                    .fill(filled ? Color(hex: "0B3F73") : Color.white)
+                    .frame(width: 5, height: 5)
+                    .padding(.trailing, 3)
             }
-        }
     }
 }
 
@@ -554,52 +543,29 @@ struct TokenIcon: View {
     let token: FakeToken
 
     var body: some View {
-        ZStack {
-            Circle().fill(Color(hex: token.iconColorHex))
-            mark
-        }
-        .frame(width: 40, height: 40)
-        .overlay(alignment: .bottomTrailing) {
-            if token.symbol == "USDT" {
-                Image(systemName: "triangle.fill")
-                    .font(.system(size: 8))
-                    .foregroundColor(Color(hex: "FF2D55"))
-                    .offset(x: 1, y: 1)
+        Image(token.symbol.lowercased())
+            .resizable()
+            .scaledToFill()
+            .frame(width: 36, height: 36)
+            .clipShape(Circle())
+            .overlay(alignment: .bottomTrailing) {
+                if token.symbol == "USDT" {
+                    Circle()
+                        .fill(Color(hex: "FF2D55"))
+                        .frame(width: 11, height: 11)
+                        .overlay(Circle().stroke(TK.card, lineWidth: 1.5))
+                        .offset(x: 2, y: 2)
+                }
             }
-        }
-        .overlay(alignment: .bottomLeading) {
-            if token.symbol == "USDC" {
-                Circle()
-                    .fill(Color(hex: "1B3A4B"))
-                    .frame(width: 12, height: 12)
-                    .overlay(Circle().stroke(TK.card, lineWidth: 1.5))
-                    .offset(x: -1, y: 1)
+            .overlay(alignment: .bottomLeading) {
+                if token.symbol == "USDC" {
+                    Circle()
+                        .fill(Color(hex: "1B3A4B"))
+                        .frame(width: 12, height: 12)
+                        .overlay(Circle().stroke(TK.card, lineWidth: 1.5))
+                        .offset(x: -2, y: 2)
+                }
             }
-        }
-    }
-
-    @ViewBuilder
-    private var mark: some View {
-        switch token.symbol {
-        case "ETH":
-            EthMark()
-        case "BNB":
-            BnbMark()
-        case "SOL":
-            SolMark()
-        case "USDT":
-            Diamond()
-                .stroke(.white, style: StrokeStyle(lineWidth: 2.2, lineJoin: .round))
-                .frame(width: 16, height: 20)
-        case "USDC":
-            Text("$")
-                .font(.system(size: 18, weight: .bold))
-                .foregroundColor(.white)
-        default:
-            Text(String(token.symbol.prefix(1)))
-                .font(.system(size: 16, weight: .bold))
-                .foregroundColor(.white)
-        }
     }
 }
 
