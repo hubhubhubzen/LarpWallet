@@ -2,13 +2,14 @@ import SwiftUI
 import UIKit
 
 enum TK {
-    static let bg = Color(hex: "171A22")
-    static let card = Color(hex: "222633")
-    static let button = Color(hex: "2A2F3C")
-    static let accent = Color(hex: "3B82F6")
-    static let secondary = Color(hex: "8B93A7")
-    static let green = Color(hex: "2FBF71")
-    static let red = Color(hex: "F2545B")
+    static let bg = Color(hex: "0F1620")
+    static let card = Color(hex: "1D2733")
+    static let button = Color(hex: "1E2836")
+    static let pill = Color(hex: "2A3344")
+    static let accent = Color(hex: "3294FF")
+    static let secondary = Color(hex: "8B95A7")
+    static let green = Color(hex: "3DDC97")
+    static let red = Color(hex: "FF5E66")
 }
 
 enum AppTab: Hashable {
@@ -94,18 +95,18 @@ struct WalletHome: View {
                     Spacer()
                     Button { showSettings = true } label: {
                         HStack(spacing: 6) {
-                            Image(systemName: "wallet.pass")
-                                .font(.system(size: 14, weight: .medium))
+                            WalletGlyph()
+                                .frame(width: 16, height: 16)
                             Text("Кошелёк")
                                 .font(.system(size: 15, weight: .semibold))
                             Image(systemName: "chevron.down")
-                                .font(.system(size: 10, weight: .bold))
+                                .font(.system(size: 9, weight: .bold))
                                 .foregroundColor(TK.secondary)
                         }
                         .foregroundColor(.white)
                         .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .background(TK.button)
+                        .padding(.vertical, 7)
+                        .background(TK.pill)
                         .clipShape(Capsule())
                     }
                     Spacer()
@@ -123,7 +124,7 @@ struct WalletHome: View {
 
                 HStack(alignment: .center, spacing: 6) {
                     Text(tkHero(store.totalUSD))
-                        .font(.system(size: 34, weight: .semibold))
+                        .font(.system(size: 40, weight: .semibold, design: .rounded))
                         .foregroundColor(.white)
                         .contentTransition(.numericText())
                     BatteryBolt()
@@ -138,8 +139,8 @@ struct WalletHome: View {
                     HStack(spacing: 6) {
                         Text(copied ? "Скопировано" : shortAddress(store.address))
                             .font(.system(size: 15, weight: .medium))
-                        Image(systemName: copied ? "checkmark" : "chevron.right")
-                            .font(.system(size: 11, weight: .bold))
+                        Image(systemName: copied ? "checkmark" : "square.on.square")
+                            .font(.system(size: 11, weight: .semibold))
                     }
                     .foregroundColor(TK.secondary)
                 }
@@ -149,7 +150,7 @@ struct WalletHome: View {
                     TKAction(title: "Отправить", icon: "arrow.up") { showSend = true }
                     TKAction(title: "Пополнить", icon: "arrow.down") { showReceive = true }
                     TKAction(title: "Обменять", icon: "arrow.up.arrow.down") { notice = Notice(title: "Обменять") }
-                    TKAction(title: "Застейкать", icon: "chart.bar.fill") { notice = Notice(title: "Застейкать") }
+                    TKAction(title: "Застейкать", icon: "stake") { notice = Notice(title: "Застейкать") }
                 }
                 .padding(.top, 26)
                 .padding(.horizontal, 8)
@@ -379,7 +380,7 @@ struct TKTabBar: View {
 
     var body: some View {
         HStack {
-            tabItem(.wallet, "wallet.pass.fill", "Кошелёк")
+            tabItem(.wallet, "wallet", "Кошелёк")
             tabItem(.trade, "chart.line.uptrend.xyaxis", "Трейд")
             tabItem(.browser, "safari", "Браузер")
         }
@@ -393,9 +394,16 @@ struct TKTabBar: View {
         return Button {
             tab = value
         } label: {
-            VStack(spacing: 4) {
-                Image(systemName: icon)
-                    .font(.system(size: 20, weight: selected ? .semibold : .regular))
+            VStack(spacing: 3) {
+                Group {
+                    if icon == "wallet" {
+                        WalletGlyph(filled: true)
+                            .frame(width: 22, height: 22)
+                    } else {
+                        Image(systemName: icon)
+                            .font(.system(size: 20, weight: selected ? .semibold : .regular))
+                    }
+                }
                 Text(title)
                     .font(.system(size: 11, weight: .medium))
             }
@@ -412,13 +420,19 @@ struct TKAction: View {
 
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 8) {
-                Image(systemName: icon)
-                    .font(.system(size: 17, weight: .medium))
-                    .foregroundColor(.white)
-                    .frame(width: 48, height: 48)
-                    .background(TK.button)
-                    .clipShape(Circle())
+            VStack(spacing: 7) {
+                Group {
+                    if icon == "stake" {
+                        StakeGlyph()
+                    } else {
+                        Image(systemName: icon)
+                            .font(.system(size: 16, weight: .regular))
+                    }
+                }
+                .foregroundColor(.white)
+                .frame(width: 46, height: 46)
+                .background(TK.button)
+                .clipShape(Circle())
                 Text(title)
                     .font(.system(size: 12, weight: .medium))
                     .foregroundColor(TK.secondary)
@@ -481,18 +495,58 @@ struct TokenRow: View {
 struct BatteryBolt: View {
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 2.5, style: .continuous)
-                .stroke(TK.accent, lineWidth: 1.3)
-                .frame(width: 20, height: 11)
-            RoundedRectangle(cornerRadius: 0.6)
+            RoundedRectangle(cornerRadius: 3, style: .continuous)
                 .fill(TK.accent)
-                .frame(width: 1.5, height: 4)
-                .offset(x: 11)
+                .frame(width: 22, height: 12)
+            RoundedRectangle(cornerRadius: 0.8)
+                .fill(TK.accent)
+                .frame(width: 2, height: 5)
+                .offset(x: 12.5)
             Image(systemName: "bolt.fill")
-                .font(.system(size: 7, weight: .bold))
-                .foregroundColor(TK.accent)
+                .font(.system(size: 8, weight: .black))
+                .foregroundColor(TK.bg)
         }
-        .frame(width: 24, height: 14)
+        .frame(width: 28, height: 16)
+    }
+}
+
+struct WalletGlyph: View {
+    var filled: Bool = false
+
+    var body: some View {
+        Canvas { context, size in
+            let w = size.width
+            let h = size.height
+            var card = Path()
+            card.addRoundedRect(
+                in: CGRect(x: w * 0.06, y: h * 0.30, width: w * 0.88, height: h * 0.60),
+                cornerSize: CGSize(width: w * 0.12, height: w * 0.12)
+            )
+            var flap = Path()
+            flap.move(to: CGPoint(x: w * 0.14, y: h * 0.36))
+            flap.addLine(to: CGPoint(x: w * 0.38, y: h * 0.10))
+            flap.addLine(to: CGPoint(x: w * 0.90, y: h * 0.10))
+            flap.addLine(to: CGPoint(x: w * 0.90, y: h * 0.36))
+            flap.closeSubpath()
+            if filled {
+                context.fill(card, with: .foreground)
+                context.fill(flap, with: .foreground)
+            } else {
+                context.stroke(card, with: .foreground, lineWidth: 1.5)
+                context.stroke(flap, with: .foreground, lineWidth: 1.5)
+            }
+        }
+    }
+}
+
+struct StakeGlyph: View {
+    var body: some View {
+        HStack(alignment: .bottom, spacing: 2) {
+            RoundedRectangle(cornerRadius: 0.6).frame(width: 3.5, height: 7)
+            RoundedRectangle(cornerRadius: 0.6).frame(width: 3.5, height: 11)
+            RoundedRectangle(cornerRadius: 0.6).frame(width: 3.5, height: 16)
+        }
+        .foregroundColor(.white)
     }
 }
 
@@ -534,9 +588,9 @@ struct TokenIcon: View {
         case "SOL":
             SolMark()
         case "USDT":
-            Text("T")
-                .font(.system(size: 18, weight: .bold))
-                .foregroundColor(.white)
+            Diamond()
+                .stroke(.white, style: StrokeStyle(lineWidth: 2.2, lineJoin: .round))
+                .frame(width: 16, height: 20)
         case "USDC":
             Text("$")
                 .font(.system(size: 18, weight: .bold))
@@ -555,45 +609,77 @@ struct EthMark: View {
             let w = size.width
             let h = size.height
             var top = Path()
-            top.move(to: CGPoint(x: w / 2, y: 0))
-            top.addLine(to: CGPoint(x: w, y: h * 0.46))
-            top.addLine(to: CGPoint(x: w / 2, y: h * 0.62))
-            top.addLine(to: CGPoint(x: 0, y: h * 0.46))
+            top.move(to: CGPoint(x: w * 0.50, y: 0))
+            top.addLine(to: CGPoint(x: w, y: h * 0.42))
+            top.addLine(to: CGPoint(x: w * 0.50, y: h * 0.58))
+            top.addLine(to: CGPoint(x: 0, y: h * 0.42))
             top.closeSubpath()
             var bottom = Path()
-            bottom.move(to: CGPoint(x: 0, y: h * 0.54))
-            bottom.addLine(to: CGPoint(x: w / 2, y: h * 0.70))
-            bottom.addLine(to: CGPoint(x: w, y: h * 0.54))
-            bottom.addLine(to: CGPoint(x: w / 2, y: h))
+            bottom.move(to: CGPoint(x: 0, y: h * 0.50))
+            bottom.addLine(to: CGPoint(x: w * 0.50, y: h * 0.66))
+            bottom.addLine(to: CGPoint(x: w, y: h * 0.50))
+            bottom.addLine(to: CGPoint(x: w * 0.50, y: h))
             bottom.closeSubpath()
             context.fill(top, with: .color(.white))
-            context.fill(bottom, with: .color(.white.opacity(0.72)))
+            context.fill(bottom, with: .color(.white.opacity(0.78)))
         }
-        .frame(width: 16, height: 22)
+        .frame(width: 18, height: 26)
     }
 }
 
 struct BnbMark: View {
     var body: some View {
-        Diamond()
-            .stroke(.white, lineWidth: 1.6)
-            .frame(width: 16, height: 16)
-            .overlay(
-                Diamond()
-                    .fill(.white)
-                    .frame(width: 6, height: 6)
-            )
+        Canvas { context, size in
+            let s = min(size.width, size.height)
+            func diamond(center: CGPoint, radius: CGFloat) -> Path {
+                var path = Path()
+                path.move(to: CGPoint(x: center.x, y: center.y - radius))
+                path.addLine(to: CGPoint(x: center.x + radius, y: center.y))
+                path.addLine(to: CGPoint(x: center.x, y: center.y + radius))
+                path.addLine(to: CGPoint(x: center.x - radius, y: center.y))
+                path.closeSubpath()
+                return path
+            }
+            let mid = CGPoint(x: s / 2, y: s / 2)
+            let r = s * 0.16
+            let d = s * 0.28
+            for point in [
+                mid,
+                CGPoint(x: mid.x, y: mid.y - d),
+                CGPoint(x: mid.x + d, y: mid.y),
+                CGPoint(x: mid.x, y: mid.y + d),
+                CGPoint(x: mid.x - d, y: mid.y)
+            ] {
+                context.fill(diamond(center: point, radius: r), with: .color(.white))
+            }
+        }
+        .frame(width: 22, height: 22)
     }
 }
 
 struct SolMark: View {
     var body: some View {
-        VStack(spacing: 2) {
-            RoundedRectangle(cornerRadius: 1).frame(width: 16, height: 3)
-            RoundedRectangle(cornerRadius: 1).frame(width: 16, height: 3).offset(x: 1)
-            RoundedRectangle(cornerRadius: 1).frame(width: 16, height: 3)
+        Canvas { context, size in
+            let colors = [
+                Color(hex: "9945FF"),
+                Color(hex: "19FB9B"),
+                Color(hex: "80ECFF")
+            ]
+            let bar = size.height / 4.2
+            let gap = bar * 0.45
+            let skew = size.width * 0.22
+            for index in 0..<3 {
+                let y = CGFloat(index) * (bar + gap)
+                var path = Path()
+                path.move(to: CGPoint(x: skew, y: y))
+                path.addLine(to: CGPoint(x: size.width, y: y))
+                path.addLine(to: CGPoint(x: size.width - skew, y: y + bar))
+                path.addLine(to: CGPoint(x: 0, y: y + bar))
+                path.closeSubpath()
+                context.fill(path, with: .color(colors[index]))
+            }
         }
-        .foregroundColor(.white)
+        .frame(width: 20, height: 16)
     }
 }
 
@@ -639,7 +725,8 @@ func tkGrouped(_ value: Double) -> String {
 }
 
 func tkPercent(_ value: Double) -> String {
-    String(format: "%.2f%%", value)
+    if value > 0 { return String(format: "+%.2f%%", value) }
+    return String(format: "%.2f%%", value)
 }
 
 func tkAmount(_ value: Double) -> String {

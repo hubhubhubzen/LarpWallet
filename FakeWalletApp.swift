@@ -25,7 +25,7 @@ struct WindowFill: UIViewRepresentable {
 }
 
 final class FillView: UIView {
-    private static let fill = UIColor(red: 23.0 / 255.0, green: 26.0 / 255.0, blue: 34.0 / 255.0, alpha: 1)
+    private static let fill = UIColor(red: 15.0 / 255.0, green: 22.0 / 255.0, blue: 32.0 / 255.0, alpha: 1)
     private var stretching = false
     private var attempts = 0
 
