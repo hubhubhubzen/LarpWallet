@@ -95,16 +95,16 @@ struct WalletHome: View {
                     Button { showSettings = true } label: {
                         HStack(spacing: 8) {
                             Text("🦬")
-                                .font(.system(size: 16))
+                                .font(.system(size: 18))
                             Text("sedativedrug")
-                                .font(.system(size: 16, weight: .semibold))
+                                .font(.system(size: 17, weight: .semibold))
                             Image(systemName: "chevron.down")
-                                .font(.system(size: 11, weight: .bold))
+                                .font(.system(size: 12, weight: .bold))
                         }
                         .foregroundColor(.white)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 8)
-                        .background(Color(hex: "DE646D"))
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 10)
+                        .background(Color(hex: "D46955"))
                         .clipShape(Capsule())
                     }
                     Spacer()
@@ -128,7 +128,18 @@ struct WalletHome: View {
                     Image("battery-tk")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 18, height: 28)
+                        .frame(width: 11, height: 16)
+                        .padding(4)
+                        .background(
+                            RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                .fill(Color(hex: "1C2430"))
+                        )
+                        .overlay(alignment: .trailing) {
+                            RoundedRectangle(cornerRadius: 1)
+                                .fill(Color(hex: "1C2430"))
+                                .frame(width: 2, height: 6)
+                                .offset(x: 2)
+                        }
                 }
                 .padding(.top, 22)
 
@@ -193,6 +204,7 @@ struct WalletHome: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 8)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 
     private func headerIcon(_ name: String, action: @escaping () -> Void) -> some View {

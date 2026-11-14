@@ -12,7 +12,7 @@ final class WalletStore: ObservableObject {
         didSet { save() }
     }
 
-    static let storageKey = "tonkeeper_fake_state_v4"
+    static let storageKey = "tonkeeper_fake_state_v5"
     private let key = WalletStore.storageKey
 
     init() {
@@ -25,17 +25,17 @@ final class WalletStore: ObservableObject {
             self.address = "UQDu0000000000000000000000003CZI"
             self.tokens = [
                 FakeToken(name: "Ethereum", symbol: "ETH",
-                          balance: 0, usdPrice: 1849.48,
-                          iconColorHex: "627EEA", priceChange: -5.04),
+                          balance: 0, usdPrice: 1833.63,
+                          iconColorHex: "627EEA", priceChange: -4.68),
                 FakeToken(name: "Solana", symbol: "SOL",
-                          balance: 0, usdPrice: 74.06,
-                          iconColorHex: "07080A", priceChange: -7.72),
+                          balance: 0, usdPrice: 73.25,
+                          iconColorHex: "07080A", priceChange: -8.08),
                 FakeToken(name: "USD Coin", symbol: "USDC",
                           balance: 0, usdPrice: 0.999,
-                          iconColorHex: "2775CA", priceChange: 0, network: "ARBITRUM"),
+                          iconColorHex: "2775CA", priceChange: -0.02, network: "ARBITRUM"),
                 FakeToken(name: "Bitcoin", symbol: "BTC",
-                          balance: 0, usdPrice: 65766.17,
-                          iconColorHex: "F7931A", priceChange: -4.67),
+                          balance: 0, usdPrice: 65429.78,
+                          iconColorHex: "F7931A", priceChange: -4.62),
                 FakeToken(name: "Dai", symbol: "DAI",
                           balance: 0, usdPrice: 0.999,
                           iconColorHex: "F5AC37", priceChange: -0.01, network: "ETHEREUM")
