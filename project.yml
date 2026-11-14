@@ -14,19 +14,29 @@ targets:
       - path: .
         includes:
           - "*.swift"
-          - "LaunchScreen.storyboard"
+      - path: LaunchScreen.storyboard
       - path: Assets.xcassets
     info:
       path: Info.plist
+      properties:
+        CFBundleDisplayName: Wallet
+        LSRequiresIPhoneOS: true
+        UIRequiresFullScreen: true
+        UIStatusBarStyle: UIStatusBarStyleLightContent
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UILaunchStoryboardName: LaunchScreen
+        UILaunchScreen:
+          UIColorName: black
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.local.fakewallet.screen
+        PRODUCT_BUNDLE_IDENTIFIER: com.local.fakewallet.full
         MARKETING_VERSION: "1.0"
-        CURRENT_PROJECT_VERSION: "7"
-        INFOPLIST_FILE: Info.plist
+        CURRENT_PROJECT_VERSION: "8"
         GENERATE_INFOPLIST_FILE: NO
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         TARGETED_DEVICE_FAMILY: "1"
+        SWIFT_VERSION: "5.0"
 schemes:
   FakeWallet:
     build:

@@ -54,10 +54,18 @@ final class FillView: UIView {
         attempts += 1
         defer { stretching = false }
 
-        let screen = window.windowScene?.screen.bounds ?? window.bounds
+        let screenObj = window.windowScene?.screen
+        let full: CGRect
+        if let screenObj {
+            let pixels = screenObj.nativeBounds
+            let scale = max(screenObj.nativeScale, 1)
+            full = CGRect(x: 0, y: 0, width: pixels.width / scale, height: pixels.height / scale)
+        } else {
+            full = window.bounds
+        }
         window.backgroundColor = Self.fill
-        if window.frame != screen {
-            window.frame = screen
+        if window.frame.size != full.size {
+            window.frame = full
         }
 
         guard let root = window.rootViewController else { return }
@@ -65,8 +73,8 @@ final class FillView: UIView {
         root.view.layer.cornerRadius = 0
         root.view.clipsToBounds = false
         root.view.insetsLayoutMarginsFromSafeArea = false
-        if root.view.frame != screen {
-            root.view.frame = screen
+        if root.view.frame.size != full.size {
+            root.view.frame = full
         }
 
         DispatchQueue.main.async { [weak self] in
