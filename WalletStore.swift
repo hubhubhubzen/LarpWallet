@@ -53,6 +53,11 @@ final class WalletStore: ObservableObject {
         tokens[i].balance = newBalance
     }
 
+    func updatePrice(tokenID: UUID, newPrice: Double) {
+        guard let i = tokens.firstIndex(where: { $0.id == tokenID }) else { return }
+        tokens[i].usdPrice = newPrice
+    }
+
     func addToken(_ token: FakeToken) {
         tokens.append(token)
     }

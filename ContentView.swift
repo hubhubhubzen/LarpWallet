@@ -106,7 +106,7 @@ struct WalletHome: View {
                         .foregroundColor(.white)
                         .padding(.leading, 12)
                         .padding(.trailing, 14)
-                        .padding(.vertical, 9)
+                        .padding(.vertical, 10)
                         .background(Color(hex: "FF4C50"))
                         .clipShape(Capsule())
                     }
@@ -131,23 +131,9 @@ struct WalletHome: View {
                 HStack(alignment: .center, spacing: 6) {
                     Text(tkHero(store.totalUSD))
                         .font(.system(size: 40, weight: .semibold, design: .rounded))
-                        .foregroundColor(.white)
+                        .foregroundColor(Color(hex: "72767C"))
                         .contentTransition(.numericText())
-                    Image("battery-tk")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 11, height: 16)
-                        .padding(4)
-                        .background(
-                            RoundedRectangle(cornerRadius: 4, style: .continuous)
-                                .fill(Color(hex: "1C2430"))
-                        )
-                        .overlay(alignment: .trailing) {
-                            RoundedRectangle(cornerRadius: 1)
-                                .fill(Color(hex: "1C2430"))
-                                .frame(width: 2, height: 6)
-                                .offset(x: 2)
-                        }
+                    KeeperBattery()
                 }
                 .padding(.top, 22)
 
@@ -188,10 +174,7 @@ struct WalletHome: View {
                         HStack(spacing: 6) {
                             Text("Управлять")
                                 .font(.system(size: 15, weight: .medium))
-                            Image("manage-tk")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 18, height: 16)
+                            ManageSliders()
                         }
                         .foregroundColor(TK.secondary)
                     }
@@ -213,6 +196,55 @@ struct WalletHome: View {
                 .padding(.bottom, 8)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+    }
+}
+
+struct KeeperBattery: View {
+    private let line = Color(hex: "2B3440")
+
+    var body: some View {
+        VStack(spacing: 1) {
+            RoundedRectangle(cornerRadius: 1)
+                .fill(line)
+                .frame(width: 8, height: 3)
+            ZStack {
+                RoundedRectangle(cornerRadius: 5, style: .continuous)
+                    .stroke(line, lineWidth: 1.5)
+                Image(systemName: "bolt.fill")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundColor(Color(hex: "2D97FF"))
+            }
+            .frame(width: 21, height: 27)
+        }
+    }
+}
+
+struct ManageSliders: View {
+    var body: some View {
+        Canvas { context, size in
+            let color = Color(hex: "8B95A7")
+            let line = StrokeStyle(lineWidth: 1.5, lineCap: .round)
+            let r: CGFloat = 2.6
+            let topY: CGFloat = 3.5
+            let botY: CGFloat = size.height - 3.5
+            var top = Path()
+            top.move(to: CGPoint(x: 1, y: topY))
+            top.addLine(to: CGPoint(x: size.width - 2 * r - 3, y: topY))
+            context.stroke(top, with: .color(color), style: line)
+            context.stroke(
+                Path(ellipseIn: CGRect(x: size.width - 2 * r - 1.5, y: topY - r, width: 2 * r, height: 2 * r)),
+                with: .color(color), lineWidth: 1.5
+            )
+            var bottom = Path()
+            bottom.move(to: CGPoint(x: 2 * r + 3, y: botY))
+            bottom.addLine(to: CGPoint(x: size.width - 1, y: botY))
+            context.stroke(bottom, with: .color(color), style: line)
+            context.stroke(
+                Path(ellipseIn: CGRect(x: 1.5, y: botY - r, width: 2 * r, height: 2 * r)),
+                with: .color(color), lineWidth: 1.5
+            )
+        }
+        .frame(width: 18, height: 16)
     }
 }
 
@@ -626,7 +658,8 @@ struct TokenIcon: View {
             Image("token-\(token.symbol.lowercased())")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 40, height: 40)
+                .frame(width: 44, height: 44)
+                .clipShape(Circle())
     }
 }
 
