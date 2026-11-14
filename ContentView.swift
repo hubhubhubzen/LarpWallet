@@ -88,25 +88,23 @@ struct WalletHome: View {
     @State private var copied = false
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 0) {
+        VStack(spacing: 0) {
                 HStack {
                     headerIcon("viewfinder") { notice = Notice(title: "Сканер") }
                     Spacer()
                     Button { showSettings = true } label: {
-                        HStack(spacing: 6) {
-                            WalletGlyph()
-                                .frame(width: 18, height: 14)
-                            Text("Кошелёк")
-                                .font(.system(size: 15, weight: .semibold))
+                        HStack(spacing: 8) {
+                            Text("🦬")
+                                .font(.system(size: 16))
+                            Text("sedativedrug")
+                                .font(.system(size: 16, weight: .semibold))
                             Image(systemName: "chevron.down")
-                                .font(.system(size: 9, weight: .bold))
-                                .foregroundColor(TK.secondary)
+                                .font(.system(size: 11, weight: .bold))
                         }
                         .foregroundColor(.white)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 7)
-                        .background(TK.pill)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 8)
+                        .background(Color(hex: "DE646D"))
                         .clipShape(Capsule())
                     }
                     Spacer()
@@ -127,7 +125,10 @@ struct WalletHome: View {
                         .font(.system(size: 40, weight: .semibold, design: .rounded))
                         .foregroundColor(.white)
                         .contentTransition(.numericText())
-                    BatteryBolt()
+                    Image("battery-tk")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 18, height: 28)
                 }
                 .padding(.top, 22)
 
@@ -168,8 +169,10 @@ struct WalletHome: View {
                         HStack(spacing: 6) {
                             Text("Управлять")
                                 .font(.system(size: 15, weight: .medium))
-                            Image(systemName: "slider.horizontal.3")
-                                .font(.system(size: 13, weight: .semibold))
+                            Image("manage-tk")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 18, height: 16)
                         }
                         .foregroundColor(TK.secondary)
                     }
@@ -178,17 +181,17 @@ struct WalletHome: View {
                 .padding(.top, 26)
                 .padding(.bottom, 10)
 
-                VStack(spacing: 2) {
+                VStack(spacing: 0) {
                     ForEach(store.tokens) { token in
                         TokenRow(token: token)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
                 }
-                .padding(.vertical, 6)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(TK.card)
                 .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
                 .padding(.horizontal, 16)
-            }
-            .padding(.bottom, 12)
+                .padding(.bottom, 8)
         }
     }
 
@@ -379,9 +382,9 @@ struct TKTabBar: View {
 
     var body: some View {
         HStack {
-            tabItem(.wallet, "wallet", "Кошелёк")
-            tabItem(.trade, "chart.line.uptrend.xyaxis", "Трейд")
-            tabItem(.browser, "safari", "Браузер")
+            tabItem(.wallet, "tab-wallet", "Кошелёк")
+            tabItem(.trade, "tab-trade", "Трейд")
+            tabItem(.browser, "tab-browser", "Браузер")
         }
         .padding(.top, 6)
         .padding(.bottom, 2)
@@ -395,12 +398,16 @@ struct TKTabBar: View {
         } label: {
             VStack(spacing: 3) {
                 Group {
-                    if icon == "wallet" {
-                        WalletGlyph(filled: true)
-                            .frame(width: 22, height: 17)
+                    if icon == "tab-wallet" {
+                        Image("tab-wallet")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 26, height: 20)
                     } else {
-                        Image(systemName: icon)
-                            .font(.system(size: 20, weight: selected ? .semibold : .regular))
+                        Image(icon)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 22, height: 22)
                     }
                 }
                 Text(title)
@@ -422,18 +429,21 @@ struct TKAction: View {
             VStack(spacing: 7) {
                 Group {
                     if icon == "stake" {
-                        StakeGlyph()
+                        Image("stake-tk")
+                            .resizable()
+                            .scaledToFit()
                     } else {
                         Image(systemName: icon)
                             .font(.system(size: 16, weight: .regular))
+                            .frame(width: 43, height: 43)
+                            .background(TK.button)
+                            .clipShape(Circle())
                     }
                 }
                 .foregroundColor(.white)
                 .frame(width: 43, height: 43)
-                .background(TK.button)
-                .clipShape(Circle())
                 Text(title)
-                    .font(.system(size: 12, weight: .medium))
+                    .font(.system(size: 13, weight: .regular))
                     .foregroundColor(TK.secondary)
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
@@ -452,7 +462,7 @@ struct TokenRow: View {
             VStack(alignment: .leading, spacing: 3) {
                 HStack(spacing: 4) {
                     Text(token.symbol)
-                        .font(.system(size: 16, weight: .bold))
+                        .font(.system(size: 17, weight: .semibold))
                         .foregroundColor(.white)
                     if let network = token.network {
                         Text(network)
@@ -463,31 +473,33 @@ struct TokenRow: View {
                             .background(Color.white.opacity(0.08))
                             .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
                     }
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 13))
-                        .foregroundColor(TK.accent)
+                    Image("seal-check")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 16, height: 16)
                 }
                 HStack(spacing: 6) {
                     Text(tkPrice(token.usdPrice))
-                        .font(.system(size: 13))
+                        .font(.system(size: 14))
                         .foregroundColor(TK.secondary)
                     Text(tkPercent(token.priceChange))
-                        .font(.system(size: 13, weight: .medium))
+                        .font(.system(size: 14, weight: .medium))
                         .foregroundColor(token.priceChange < 0 ? TK.red : TK.green)
                 }
             }
             Spacer(minLength: 8)
             VStack(alignment: .trailing, spacing: 3) {
                 Text(tkAmount(token.balance))
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.system(size: 17, weight: .semibold))
                     .foregroundColor(.white)
                 Text(token.usdValue == 0 ? "$0" : tkPrice(token.usdValue))
-                    .font(.system(size: 13))
+                    .font(.system(size: 14))
                     .foregroundColor(TK.secondary)
             }
         }
         .padding(.horizontal, 14)
-        .padding(.vertical, 9)
+        .padding(.vertical, 14)
+        .frame(minHeight: 72)
     }
 }
 
@@ -543,29 +555,10 @@ struct TokenIcon: View {
     let token: FakeToken
 
     var body: some View {
-        Image(token.symbol.lowercased())
-            .resizable()
-            .scaledToFill()
-            .frame(width: 36, height: 36)
-            .clipShape(Circle())
-            .overlay(alignment: .bottomTrailing) {
-                if token.symbol == "USDT" {
-                    Circle()
-                        .fill(Color(hex: "FF2D55"))
-                        .frame(width: 11, height: 11)
-                        .overlay(Circle().stroke(TK.card, lineWidth: 1.5))
-                        .offset(x: 2, y: 2)
-                }
-            }
-            .overlay(alignment: .bottomLeading) {
-                if token.symbol == "USDC" {
-                    Circle()
-                        .fill(Color(hex: "1B3A4B"))
-                        .frame(width: 12, height: 12)
-                        .overlay(Circle().stroke(TK.card, lineWidth: 1.5))
-                        .offset(x: -2, y: 2)
-                }
-            }
+            Image("token-\(token.symbol.lowercased())")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 40, height: 40)
     }
 }
 

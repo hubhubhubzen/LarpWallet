@@ -12,7 +12,7 @@ final class WalletStore: ObservableObject {
         didSet { save() }
     }
 
-    static let storageKey = "tonkeeper_fake_state_v3"
+    static let storageKey = "tonkeeper_fake_state_v4"
     private let key = WalletStore.storageKey
 
     init() {
@@ -26,19 +26,19 @@ final class WalletStore: ObservableObject {
             self.tokens = [
                 FakeToken(name: "Ethereum", symbol: "ETH",
                           balance: 0, usdPrice: 1849.48,
-                          iconColorHex: "627EEA", priceChange: -5.48),
-                FakeToken(name: "BNB", symbol: "BNB",
-                          balance: 0, usdPrice: 598.54,
-                          iconColorHex: "F0B90B", priceChange: -6.49),
+                          iconColorHex: "627EEA", priceChange: -5.04),
                 FakeToken(name: "Solana", symbol: "SOL",
-                          balance: 0, usdPrice: 73.93,
-                          iconColorHex: "07080A", priceChange: -9.02),
-                FakeToken(name: "Tether USD", symbol: "USDT",
-                          balance: 0, usdPrice: 0.999,
-                          iconColorHex: "26A17B", priceChange: 0.02, network: "TRON"),
+                          balance: 0, usdPrice: 74.06,
+                          iconColorHex: "07080A", priceChange: -7.72),
                 FakeToken(name: "USD Coin", symbol: "USDC",
                           balance: 0, usdPrice: 0.999,
-                          iconColorHex: "2775CA", priceChange: 0, network: "ARBITRUM")
+                          iconColorHex: "2775CA", priceChange: 0, network: "ARBITRUM"),
+                FakeToken(name: "Bitcoin", symbol: "BTC",
+                          balance: 0, usdPrice: 65766.17,
+                          iconColorHex: "F7931A", priceChange: -4.67),
+                FakeToken(name: "Dai", symbol: "DAI",
+                          balance: 0, usdPrice: 0.999,
+                          iconColorHex: "F5AC37", priceChange: -0.01, network: "ETHEREUM")
             ]
             self.history = []
         }
