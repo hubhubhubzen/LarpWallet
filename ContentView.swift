@@ -135,12 +135,15 @@ struct WalletHome: View {
                 HStack(alignment: .center, spacing: 6) {
                     let parts = tkHeroParts(store.totalUSD)
                     HStack(alignment: .firstTextBaseline, spacing: 0) {
+                        Text("$")
+                            .font(.system(size: 46, weight: .semibold, design: .rounded))
                         Text(parts.whole)
                             .font(.system(size: 46, weight: .semibold, design: .rounded))
+                            .padding(.leading, 9)
                         Text(parts.fraction)
                             .font(.system(size: 32, weight: .semibold, design: .rounded))
                     }
-                    .foregroundColor(Color(hex: "72767C"))
+                    .foregroundColor(.white)
                     .contentTransition(.numericText())
                     KeeperBattery()
                 }
@@ -778,9 +781,9 @@ func shortAddress(_ a: String) -> String {
 func tkHeroParts(_ value: Double) -> (whole: String, fraction: String) {
     let full = tkGrouped(value)
     if let comma = full.lastIndex(of: ",") {
-        return ("$ " + String(full[..<comma]), String(full[comma...]))
+        return (String(full[..<comma]), String(full[comma...]))
     }
-    return ("$ " + full, "")
+    return (full, "")
 }
 
 func tkHero(_ value: Double) -> String {
