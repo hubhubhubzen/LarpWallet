@@ -6,16 +6,10 @@ struct FakeWalletApp: App {
 
     var body: some Scene {
         WindowGroup {
-            GeometryReader { proxy in
+            ZStack {
+                TK.bg.ignoresSafeArea()
                 ContentView()
-                    .padding(.top, proxy.safeAreaInsets.top)
-                    .padding(.bottom, proxy.safeAreaInsets.bottom)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(TK.bg)
-                    .ignoresSafeArea(.all)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(TK.bg.ignoresSafeArea())
             .environmentObject(store)
             .preferredColorScheme(.dark)
         }
